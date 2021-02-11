@@ -2,9 +2,6 @@
 __pycache__/
 *.pyc
 
-# Django
-migrations/
-
 # Docker
 docker/*/data/*
 

@@ -1,7 +1,7 @@
 # Mercy Kids API
 ![CI Lint](https://github.com/mercy-project/mercy-kids-django/workflows/Lint/badge.svg)
-![Python 3.8](https://img.shields.io/badge/Python-3.8-blue.svg)
-![Django](https://img.shields.io/badge/Django-3.1.5-yellowgreen.svg)
+![Python 3.8](https://img.shields.io/badge/Python-3.8-blue.svg?logo=python)
+![Django](https://img.shields.io/badge/Django-3.1.5-yellowgreen.svg?logo=django)
 
 ## virtualenv
 ```bat
