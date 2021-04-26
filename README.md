@@ -18,6 +18,8 @@
 (env) % python manage.py makemigrations mercykids
 (env) % python manage.py sqlmigrate mercykids 0001
 (env) % python manage.py migrate
+# Super User
+(env) % python manage.py createsuperuser
 ```
 
 ## Conventions / Style Guides

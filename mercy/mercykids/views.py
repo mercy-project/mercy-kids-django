@@ -1,10 +1,12 @@
 import json
 from datetime import datetime
 
-# from django.shortcuts import render
 from django.http import JsonResponse
 
 from mercykids.models import User
+from mercykids.utils.regex import email_regex
+from mercykids.utils.mailer import PyMailer
+from mercykids.utils.random import generate_random_string
 
 HTTP_OK = 200
 HTTP_BAD_REQUEST = 400
@@ -37,6 +39,7 @@ def auth_verify_email(request):
 
 
 def register_user(request):
+    # TODO: django auth
     # TODO: 1) 이메일 형태 검증 (regex)
     # TODO: 2) 이메일 중복 확인
     # TODO: 3) 비밀번호 해싱
@@ -45,22 +48,45 @@ def register_user(request):
     name = request.POST.get('name', None)
     nickname = request.POST.get('nickname', None)
     birthdate = request.POST.get('birthdate', None)
+    activation_code = generate_random_string()
+    if _is_email_registered(email):
+        return BooleanJsonResponse(False)
+
     user = User(
         email=email,
         password=password,
         name=name,
         nickname=nickname,
-        birthdate=datetime(*map(int, birthdate.split('-')))
+        birthdate=datetime(*map(int, birthdate.split('-'))),
+        activation_code=activation_code
     )
     user.save()
+    print('user:', user.email, user)
+
+    PyMailer.send_mail(
+        [email],
+        subject='Welcome to MercyKids!',
+        content=f'<br><a href="http://localhost:8000/kids/auth/activate?code={activation_code}">link</a>')
 
     return BooleanJsonResponse(True)
+
+
+def auth_activate(request):
+    code = request.GET.get('code', None)
+    try:
+        user = User.objects.filter(activation_code=code).get()
+        user.authenticated_at = datetime.now()
+        user.save()
+        return BooleanJsonResponse(True)
+    except:
+        return BooleanJsonResponse(False)
 
 
 def _is_email_registered(email: str) -> bool:
     query = User.objects.filter(email=email)
     try:
         _ = query.get()
+        print(_)
         return True
     except User.DoesNotExist:
         return False
