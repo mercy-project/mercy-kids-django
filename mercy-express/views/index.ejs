@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <style>
+      #form {
+        margin-bottom: 20px;
+      }
+      .location {
+        float: left;
+        padding: 10px;
+        margin-right: 20px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      .location p {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+      .zip { font-size: 2em; }
+      .temp { font-size: 4em; }
+    </style>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+
+    <div id="app-container">
+      <div id="form">
+        <label>Zip Code:</label>
+        <input type="text" id="zipcode-input">
+        <button id="add-location">Add Location</button>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/4.1.0/rx.all.min.js"></script>
+    <script>
+      const appContainer = document.getElementById('app-container');
+      const zipcodeInput = document.getElementById('zipcode-input');
+      const addLocationButton = document.getElementById('add-location');
+
+      const buttonClickStream = Rx.Observable
+                                  .fromEvent(addLocationButton, 'click')
+                                  .map(() => true);
+                                  //.forEach(val => console.log('buttonClickStream:', val));
+
+      const zipInputStream = Rx.Observable
+                                .fromEvent(zipcodeInput, 'input')
+                                .map(e => e.target.value)
+                                .filter(zip => zip.length == 5);
+                                //.forEach(val => console.log('zipInputStream:', val));
+
+      const zipcodeStream = buttonClickStream
+                              .withLatestFrom(zipInputStream, (click, zip) => zip)
+                              .distinct()
+                              .forEach(val => console.log('zipcodeStream:', val));
+      /*
+      const getTemperature = zip =>
+        fetch(`http://api.openweathermap.org/data/2.5/weather?q=${zip},us&units=imperial&appid=APPID`)
+          .then(res => res.json());
+
+      const zipTemperatureStreamFactory = zip =>
+        Rx.Observable
+          .fromPromise(getTemperature(zip))
+          .map(({ main: { temp } }) => ({ temp, zip }));
+      */
+    </script>
+  </body>
+</html>

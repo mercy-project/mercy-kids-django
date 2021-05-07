@@ -1,3 +1,5 @@
+node_modules/
+
 # Python
 __pycache__/
 *.pyc
@@ -10,7 +12,7 @@ docker/*/data/*
 
 # Virtualenv
 .Python
-[Bb]in
+venv/[Bb]in
 [Ii]nclude
 [Ll]ib
 [Ll]ib64
