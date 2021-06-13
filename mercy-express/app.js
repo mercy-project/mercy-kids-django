@@ -3,8 +3,13 @@ import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
+import SwaggerUi from "swagger-ui-express";
 
 import indexRouter from './routes/index';
+import authRouter from './routes/auth';
+import surveyRouter from './routes/survey';
+
+import swaggerDocumentSpec from './swagger.doc';
 
 const app = express();
 
@@ -19,6 +24,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/auth', authRouter);
+app.use('/survey', surveyRouter);
+
+app.use("/docs",
+  SwaggerUi.serve,
+  SwaggerUi.setup(swaggerDocumentSpec)
+);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
